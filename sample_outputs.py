@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from Transformer import Transformer
 import sentencepiece as spm
 
-checkpoint_path = "transformer_checkpoint.pt"
+checkpoint_path = "model_weights.pt"
 tokenizer_path = "Data/tokenizer.model"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 

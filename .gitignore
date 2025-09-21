@@ -8,3 +8,5 @@ Data/corpus.txt
 !Data/*.model
 !Data/*.vocab
 transformer_checkpoint.pt
+extract
+model_weights.pt
