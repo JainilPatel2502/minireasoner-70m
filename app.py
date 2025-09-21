@@ -43,6 +43,26 @@ st.markdown("""
         outline: none;
     }
     
+    /* Text area styling */
+    .stTextArea > div > div > textarea {
+        border-radius: 8px;
+        padding: 12px 16px;
+        background-color: #2a2a2a;
+        color: #ffffff;
+        border: 1px solid #404040;
+        font-size: 16px;
+        font-family: 'Courier New', monospace;
+        line-height: 1.5;
+        resize: vertical;
+        min-height: 80px;
+    }
+    
+    .stTextArea > div > div > textarea:focus {
+        border-color: #4a90e2;
+        box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        outline: none;
+    }
+    
     /* AI response box */
     .output-box {
         background-color: #1a1a1a;
@@ -153,18 +173,22 @@ if "current_output" not in st.session_state:
 
 # Show current conversation if exists
 if st.session_state.current_input:
+    # Escape HTML and preserve line breaks for user input
+    escaped_input = st.session_state.current_input.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br>")
     st.markdown(f"""
     <div class="user-input-box">
         <strong>👤 You</strong><br><br>
-        {st.session_state.current_input}
+        <pre style="white-space: pre-wrap; font-family: 'Courier New', monospace; margin: 0; background: transparent; border: none; padding: 0;">{escaped_input}</pre>
     </div>
     """, unsafe_allow_html=True)
 
 if st.session_state.current_output:
+    # Escape HTML and preserve line breaks for AI output
+    escaped_output = st.session_state.current_output.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\n", "<br>")
     st.markdown(f"""
     <div class="output-box">
         <strong>🤖 AI Assistant</strong><br><br>
-        {st.session_state.current_output}
+        <pre style="white-space: pre-wrap; font-family: inherit; margin: 0; background: transparent; border: none; padding: 0;">{escaped_output}</pre>
     </div>
     """, unsafe_allow_html=True)
 
@@ -179,11 +203,12 @@ st.subheader("💬 Type your message:")
 col1, col2 = st.columns([4, 1])
 
 with col1:
-    user_input = st.text_input(
+    user_input = st.text_area(
         "Message",
-        placeholder="Enter your message here...",
+        placeholder="Enter your message here...\n\nTip: You can paste multi-line code and it will preserve formatting!",
         key="chat_input",
-        label_visibility="collapsed"
+        label_visibility="collapsed",
+        height=100
     )
 
 with col2:
