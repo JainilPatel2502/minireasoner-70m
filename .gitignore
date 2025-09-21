@@ -1,0 +1,10 @@
+__pycache__/
+Backup/
+runs/
+Data/train_00[0-5][0-9].bin
+Data/train_0060.bin
+Data/corpus.txt
+!Data/*.py
+!Data/*.model
+!Data/*.vocab
+transformer_checkpoint.pt
