@@ -11,11 +11,7 @@ class Transformer(nn.Module):
         ])
         self.norm = RMSNorm(embd_dim)
         self.head = nn.Linear(embd_dim, vocab_size, bias=False)
-
-        # ---- weight tying ----
         self.head.weight = self.token_emb.weight
-        
-        # ---- proper weight initialization ----
         self.apply(self._init_weights)
 
     def _init_weights(self, module):
@@ -28,7 +24,7 @@ class Transformer(nn.Module):
 
     def forward(self, idx):
         B, T = idx.shape
-        x = self.token_emb(idx)  # [B, T, C]
+        x = self.token_emb(idx)
 
         for block in self.blocks:
             x = block(x)

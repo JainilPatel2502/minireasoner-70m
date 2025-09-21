@@ -19,7 +19,7 @@ num_heads = 8
 num_layers = 21
 
 # Advanced generation parameters for better quality
-temperature = 0.5 # Lower for more focused responses
+temperature = 0.8  # Lower for more focused responses
 top_k = 40         # Limit to top 40 tokens
 top_p = 0.9        # Nucleus sampling
 repetition_penalty = 1.1  # Reduce repetition
@@ -107,7 +107,7 @@ print("Generating 1000 tokens with advanced sampling...")
 print(f"Temperature: {temperature}, Top-k: {top_k}, Top-p: {top_p}, Repetition penalty: {repetition_penalty}")
 
 with torch.no_grad():
-    for i in range(5000):
+    for i in range(1000):
         # Get input (last seq_len tokens)
         input_tokens = generated[:, -seq_len:] if generated.size(1) > seq_len else generated
         
@@ -158,6 +158,9 @@ with open(output_file, 'w', encoding='utf-8') as f:
     f.write("="*60 + "\n\n")
     f.write(f"Original Prompt:\n{prompt_text}\n\n")
     f.write("="*60 + "\n\n")
+    f.write("FULL GENERATED TEXT:\n")
+    f.write(full_decoded_text + "\n\n")
+    f.write("="*60 + "\n\n")
     f.write("NEW GENERATED TEXT (excluding prompt):\n")
     f.write(new_decoded_text + "\n\n")
     f.write("="*60 + "\n\n")
@@ -165,4 +168,48 @@ with open(output_file, 'w', encoding='utf-8') as f:
     f.write(f"Prompt tokens: {prompt_token_count}\n")
     f.write(f"New tokens generated: {len(new_tokens)}\n")
     f.write(f"Total tokens: {len(generated_tokens)}\n")
+    f.write(f"Temperature: {temperature}\n")
+    f.write(f"Top-k: {top_k}\n")
+    f.write(f"Top-p: {top_p}\n")
+    f.write(f"Repetition penalty: {repetition_penalty}\n")
 
+# Display results
+print(f"\n" + "="*60)
+print("GENERATION COMPLETE!")
+print("="*60)
+print(f"📊 Statistics:")
+print(f"   Prompt tokens: {prompt_token_count}")
+print(f"   New tokens generated: {len(new_tokens)}")
+print(f"   Total tokens: {len(generated_tokens)}")
+print(f"   Average tokens per word: {len(generated_tokens) / max(1, len(full_decoded_text.split())):.2f}")
+
+print(f"\n📝 Generated text preview (first 300 characters):")
+print("-" * 60)
+preview_text = new_decoded_text[:300]
+print(preview_text + ("..." if len(new_decoded_text) > 300 else ""))
+
+print(f"\n💾 Full output saved to: {output_file}")
+
+# Quality analysis
+print(f"\n📈 Quality Analysis:")
+unique_tokens = len(set(new_tokens))
+repetition_ratio = 1 - (unique_tokens / max(1, len(new_tokens)))
+print(f"   Unique tokens: {unique_tokens}/{len(new_tokens)} ({unique_tokens/max(1, len(new_tokens))*100:.1f}%)")
+print(f"   Repetition ratio: {repetition_ratio:.3f} (lower is better)")
+
+# Check for common patterns
+newlines = new_decoded_text.count('\n')
+if newlines > 0:
+    print(f"   Lines generated: {newlines}")
+
+print(f"\n✨ Generation settings used:")
+print(f"   Temperature: {temperature} (lower = more focused)")
+print(f"   Top-k: {top_k} (limits vocabulary)")
+print(f"   Top-p: {top_p} (nucleus sampling)")
+print(f"   Repetition penalty: {repetition_penalty} (reduces repetition)")
+
+print(f"\n🎯 Tips for better results:")
+print(f"   - Lower temperature (0.5-0.7) for more coherent text")
+print(f"   - Higher temperature (1.0-1.3) for more creative text") 
+print(f"   - Adjust top_k (20-60) to control vocabulary diversity")
+print(f"   - Use specific, detailed prompts for better context")
